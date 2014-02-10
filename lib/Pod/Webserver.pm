@@ -112,7 +112,7 @@ sub _arg_h {
     "  podwebserver                   = Start podwebserver on localhost:8020. Search \@INC",
     "  podwebserver -p 1234           = Start podwebserver on localhost:1234",
     "  podwebserver -p 1234 -H blorp  = Start podwebserver on blorp:1234",
-    "  podwebserver -t 3600           = Auto-exit after 3600 seconds. 0: Never exit. Default: 18000",
+    "  podwebserver -t 3600           = Auto-exit in 1 hour. Default => 18000 (5 hours). 0 => No timeout",
 	"  podwebserver -d /path/to/lib   = Ignore \@INC, and only search within /path/to/lib",
 	"  podwebserver -e /path/to/skip  = Exclude /path/to/skip files",
     "  podwebserver -q                = Quick startup (but no Table of Contents)",
@@ -187,14 +187,14 @@ sub new_daemon {
 
   my @opts;
 
-  push @opts, LocalHost => $self->httpd_host if defined $self->httpd_host;
+  push @opts, LocalHost => $self->httpd_host if (defined $self->httpd_host);
   push @opts, LocalPort => $self->httpd_port || 8020;
 
-  if (defined $self->httpd)
+  if (defined $self->httpd_timeout)
   {
-	if ($self->httpd > 0)
+	if ($self->httpd_timeout > 0)
 	{
-	  push @opts, Timeout => $self->httpd;
+	  push @opts, Timeout => $self->httpd_timeout;
 	}
   }
   else
