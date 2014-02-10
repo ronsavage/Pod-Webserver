@@ -1,3 +1,4 @@
+Build.PL
 Changelog.ini
 Changes
 lib/Pod/Webserver.pm
@@ -11,3 +12,4 @@ t/daemon.t
 t/pod_webserver.t
 t/version.t
 xt/author/pod.t
+META.json

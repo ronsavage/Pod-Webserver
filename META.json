@@ -3,7 +3,7 @@
    "author" : [
       "Sean M. Burke C<sburke@cpan.org>"
    ],
-   "dynamic_config" : 0,
+   "dynamic_config" : 1,
    "generated_by" : "Module::Build version 0.4204",
    "license" : [
       "artistic_2"
