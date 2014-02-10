@@ -15,6 +15,8 @@ Revision history for Perl module Pod::Webserver:
 	- Flag RT#59890 as not-an-error, since http://localhost:8020/pods/perlfaq is not (presumably) output by
 		the code, and hence is not the jumping-off point for any within-FAQ links.
 	- Switch tests from using Test to Test::More.
+	- Add t/version.t.
+	- Add xt/author/pod.t.
 	- Expand docs slightly.
 	- Ensure port and timeout parameters are integers. Print help and exit if not.
 	- Expand help message.

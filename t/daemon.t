@@ -48,7 +48,7 @@ my $sock = $daemon->{__sock};
 # Create a dummy client in another process.
 use Config;
 my $perl = $Config{'perlpath'};
-open(CLIENT, "$perl 03_daemon.t client |") or die "Can't exec client: $!";
+open(CLIENT, "$perl daemon.t client |") or die "Can't exec client: $!";
 
 # Accept a request from the dummy client.
 my $conn = $daemon->accept;

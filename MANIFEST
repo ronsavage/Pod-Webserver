@@ -1,4 +1,3 @@
-ChangeLog
 Changelog.ini
 Changes
 lib/Pod/Webserver.pm
@@ -7,6 +6,8 @@ MANIFEST
 META.yml			Module meta-data (added by MakeMaker)
 podwebserver
 README
-t/01_about_verbose.t
-t/02_pod_webserver.t
-t/03_daemon.t
+t/about_verbose.t
+t/pod_webserver.t
+t/daemon.t
+t/version.t
+xt/author/pod.t
