@@ -18,7 +18,6 @@ BEGIN {
 use Pod::Simple::HTMLBatch;
 use Pod::Simple::TiedOutFH;
 use Pod::Simple;
-use Carp ();
 use IO::Socket;
 use File::Spec;
 use File::Spec::Unix ();
@@ -277,7 +276,7 @@ sub prep_lookup_table {
 		delete $m2p->{$key} if grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude };
 	}
 
-    die "What, no name2path?!" unless $m2p and keys %$m2p;
+    die "Missing path\n" unless $m2p and keys %$m2p;
     DEBUG > -1 and print " Done scanning \@INC\n";
 	DEBUG > -1 and print " Done scanning ",
 		$dir_include ? "@$dir_include" : '@INC', "\n";
@@ -304,7 +303,7 @@ sub write_contents_file {
 sub add_to_fs {  # add an item to my virtual in-memory filesystem
   my($self,$file,$type,$content) = @_;
 
-  Carp::croak "What filespec?" unless defined $file and length $file;
+  die "Missing filespec\n" unless defined $file and length $file;
   $file = "/$file";
   $file =~ s{/+}{/}s;
   $type ||=
