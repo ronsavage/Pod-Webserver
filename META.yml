@@ -1,0 +1,21 @@
+--- #YAML:1.0
+name:                Pod-Webserver
+version:             3.05
+abstract:            a miniature web server for reading Pod in web browsers
+license:             ~
+author:              ~
+generated_by:        ExtUtils::MakeMaker version 6.42
+distribution_type:   module
+requires:     
+    Carp:                          0
+    File::Spec::Unix:              0
+    IO::Socket:                    0
+    Pod::Simple:                   3.01
+    Pod::Simple::HTML:             0
+    Pod::Simple::HTMLBatch:        0
+    Pod::Simple::Progress:         0
+    strict:                        0
+    vars:                          0
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3
