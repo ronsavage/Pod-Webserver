@@ -26,7 +26,6 @@
       },
       "runtime" : {
          "requires" : {
-            "Carp" : "0",
             "File::Spec" : "0",
             "File::Spec::Unix" : "0",
             "IO::Socket" : "0",
@@ -34,8 +33,10 @@
             "Pod::Simple::HTML" : "0",
             "Pod::Simple::HTMLBatch" : "0",
             "Pod::Simple::Progress" : "0",
+            "Test::More" : "0.94",
+            "Test::Version" : "1.002003",
             "strict" : "0",
-            "vars" : "0"
+            "warnings" : "0"
          }
       }
    },

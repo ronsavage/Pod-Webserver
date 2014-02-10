@@ -31,20 +31,18 @@ my(%params) =
 	PL_FILES  => {},
 	PREREQ_PM =>
 	{
-    strict vars Pod::Simple::Progress Pod::Simple::HTMLBatch
-    Pod::Simple::HTML Carp IO::Socket File::Spec File::Spec::Unix
-
-		'File::Spec'                  => 0,
-		'File::Spec::Unix'            => 0,
-		'Pod::Simple'                 => 3.01,
-		'Pod::Simple::HTML'           => 0,
-		'Pod::Simple::HTMLBatch'      => 0,
-		'Pod::Simple::Progress'       => 0,
-		'strict'                      => 0,
-		'Test::More'                  => 0.94,
-#	 	'Test::Pod'                   => 1.45, # Make it optional. See t/pod.t
-		'Test::Version'               => 1.002003,
-		'warnings'                    => 0,
+		'File::Spec'             => 0,
+		'File::Spec::Unix'       => 0,
+		'IO::Socket'             => 0,
+		'Pod::Simple'            => 3.01,
+		'Pod::Simple::HTML'      => 0,
+		'Pod::Simple::HTMLBatch' => 0,
+		'Pod::Simple::Progress'  => 0,
+		'strict'                 => 0,
+		'Test::More'             => 0.94,
+#	 	'Test::Pod'              => 1.45, # Make it optional. See xt/author/pod.t
+		'Test::Version'          => 1.002003,
+		'warnings'               => 0,
 	},
 	VERSION_FROM => 'lib/Pod/Webserver.pm',
 );
