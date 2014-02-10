@@ -7,7 +7,7 @@ META.yml			Module meta-data (added by MakeMaker)
 podwebserver
 README
 t/about_verbose.t
-t/pod_webserver.t
 t/daemon.t
+t/pod_webserver.t
 t/version.t
 xt/author/pod.t
