@@ -4,6 +4,7 @@ Changes
 lib/Pod/Webserver.pm
 Makefile.PL
 MANIFEST
+META.json
 META.yml			Module meta-data (added by MakeMaker)
 podwebserver
 README
@@ -12,4 +13,3 @@ t/daemon.t
 t/pod_webserver.t
 t/version.t
 xt/author/pod.t
-META.json
