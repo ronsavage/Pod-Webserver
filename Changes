@@ -1,0 +1,37 @@
+Revision history for Perl module Pod::Webserver:
+
+3.06  2014-02-10
+	- Ron Savage is now co-maint.
+	- Remove 'require 5;' from the source. If you're running Perl V 4, you'll have even more problems now.
+	- Add a timeout parameter. The unit seconds. Timeout defaults (as always) to 18,000 = 5 hours.
+		This addresses RT#21582. Thanx to Ivor Williams for the 2006 report.
+		Yes, it has been a regrettably long time, hasn't it?
+	- Remove spaces in option string passed to Getopt::Std.
+		This addresses RT#44520. Thanx to Marek.Rouchal for the 2009 report.
+		This problem was also noted in RT#55106. Thanx to COSMICNET for the 2010 report.
+		This problem was also noted in RT#62939. Thanx to Allison Randal for the 2010 report.
+	- Ensure port and timeout parameters are integers. Print help and exit if not.
+	- Expand help message.
+	- Include File::Spec in the pre-reqs. It's used by the new -d and -e options.
+	- Replace brief MANIFEST.SKIP with long version (copied from GraphViz2).
+	- Reformat this file so it can be read by Module::Metadata::Changes' ini.report.pl.
+	- Rename ChangeLog to Changes.
+	- Add Changelog.ini (output of ini.report.pl).
+
+3.05  2008-01-09
+	- Allison Randal <allison@perl.org>
+	- Added an explicit VERSION to Pod::Webserver::Daemon, to pass the tests on Perl version 5.10.0.
+
+3.04  2006-09-12
+	- Allison Randal <allison@perl.org>
+	- Applied a patch from Nicholas Clark to eliminate the dependency on LWP, so the module
+		could be incorporated into the Perl core. Mad props to Nick for the networking code!
+
+3.03  2004-06-20
+	- Sean M. Burke <sburke@cpan.org>
+	- No code changes; I merely added some extra docs about -T and security and @INC things.
+	- Thanks for all your supportive email!  I am surprised by what a hit this module has become!
+
+3.02  2004-05-25
+	- Sean M. Burke <sburke@cpan.org>
+	- First released version.
