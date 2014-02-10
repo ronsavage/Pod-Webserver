@@ -91,7 +91,7 @@ sub _get_options {
   }
   else
   {
-	$self->dir_include( [@INC] );
+	$self->dir_include( [] );
   }
 
   $self->httpd_host( $o{'H'} )		if $o{'H'};
@@ -182,17 +182,26 @@ sub _serve_pod {
 }
 
 #==========================================================================
-
 sub new_daemon {
   my $self = shift;
-  my @opts = (
-      defined($self->httpd_host) ?
-             (LocalHost => $self->httpd_host) : (),
-              LocalPort => $self->httpd_port || 8020,
-              Timeout   =>
-               defined($self->httpd_timeout) ?
-                       $self->httpd_timeout : (5*3600), # exit after 5H idle
-  );
+
+  my @opts;
+
+  push @opts, LocalHost => $self->httpd_host if defined $self->httpd_host;
+  push @opts, LocalPort => $self->httpd_port || 8020;
+
+  if (defined $self->httpd)
+  {
+	if ($self->httpd > 0)
+	{
+	  push @opts, Timeout => $self->httpd;
+	}
+  }
+  else
+  {
+	push @opts, Timeout => 5 * 3600; # Default to exit after 5 hours of idle time.
+  }
+
   $self->muse( "Starting daemon with options {@opts}" );
   Pod::Webserver::Daemon->new(@opts) || die "Can't start a daemon: $!\nAborting";
 }
