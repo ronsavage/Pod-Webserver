@@ -3,7 +3,7 @@ package Pod::Webserver;
 use strict;
 use vars qw( $VERSION @ISA );
 
-our $VERSION = '3.05';
+our $VERSION = '3.06';
 
 BEGIN {
   if(defined &DEBUG) { } # no-op
