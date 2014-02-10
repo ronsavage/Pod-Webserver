@@ -1,3 +1,10 @@
+use strict;
+use warnings;
+
+use IO::Socket;
+
+use Test::More tests => 8;
+
 BEGIN {
     chdir "t" if -e "t";
     if($ENV{PERL_CORE}) {
@@ -6,11 +13,6 @@ BEGIN {
         push @INC, '../lib';
     }
 }
-require 5;
-use strict;
-use warnings;
-use IO::Socket;
-
 # When run with the single argument 'client', the test script should run
 # a dummy client and exit.
 my $mode = shift || '';
@@ -22,14 +24,13 @@ if ($mode eq 'client') {
     exit;
 }
 
-use Test;
-BEGIN {plan tests => 8};
-
 use Pod::Webserver;
 ok 1;
 
 my $ws = Pod::Webserver->new();
 ok ($ws);
+$ws->dir_exclude([]);
+$ws->dir_include([@INC]);
 $ws->verbose(0);
 $ws->httpd_timeout(10);
 $ws->httpd_port($ENV{'PODWEBSERVERPORT'}) if ($ENV{'PODWEBSERVERPORT'});
@@ -67,7 +68,7 @@ $ws->_serve_thing($conn, $req);
 $conn->close;
 
 my $captured_response;
-{ 
+{
     open(COMP, $testfile);
     local $/ = '';
     $captured_response = <COMP>;

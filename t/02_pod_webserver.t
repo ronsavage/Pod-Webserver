@@ -1,11 +1,11 @@
+use strict;
+use warnings;
+
+use Test::More tests => 14;
+
 BEGIN {
     chdir "t" if -e "t";
 }
-require 5;
-use strict;
-
-use Test;
-BEGIN {plan tests => 14};
 
 use Pod::Webserver;
 ok 1;
@@ -40,7 +40,7 @@ $conn->send_response($resp);
 $conn->close;
 
 my $captured_response;
-{ 
+{
     open(COMP, $testfile);
     local $/ = '';
     $captured_response = <COMP>;
@@ -65,7 +65,7 @@ $conn->send_error('404');
 $conn->close;
 
 my $captured_error;
-{ 
+{
     open(COMP, $testfile);
     local $/ = '';
     $captured_error = <COMP>;

@@ -76,13 +76,28 @@ sub _get_options {
   $self->_arg_h, exit(0) if ($o{p} and ($o{p} !~ /^\d+$/) );
   $self->_arg_h, exit(0) if ($o{t} and ($o{t} !~ /^\d+$/) );
 
-  $self->dir_include( [] );
-  $self->dir_include( [ map File::Spec->canonpath($_), split(/:|;/, $o{'d'}) ] ) if $o{'d'};
-  $self->dir_exclude( [] );
-  $self->dir_exclude( [ map File::Spec->canonpath($_), split(/:|;/, $o{'e'}) ] ) if $o{'e'};
+  if ($o{'e'})
+  {
+	$self->dir_exclude( [ map File::Spec->canonpath($_), split(/:|;/, $o{'e'}) ] );
+  }
+  else
+  {
+	$self->dir_exclude( [] );
+  }
+
+  if ($o{'d'})
+  {
+	$self->dir_include( [ map File::Spec->canonpath($_), split(/:|;/, $o{'d'}) ] );
+  }
+  else
+  {
+	$self->dir_include( [@INC] );
+  }
+
   $self->httpd_host( $o{'H'} )		if $o{'H'};
   $self->httpd_port( $o{'p'} )		if $o{'p'};
   $self->httpd_timeout( $o{'t'} )	if $o{'t'};
+
   $self->skip_indexing(1)			if $o{'q'};
   $self->verbose(4)					if $o{'v'};
 
@@ -94,7 +109,7 @@ sub _arg_h {
   $_[0]->_arg_V;
   print join "\n",
     "Usage:",
-    "  podwebserver                   = Start podwebserver on localhost:8020",
+    "  podwebserver                   = Start podwebserver on localhost:8020. Search \@INC",
     "  podwebserver -p 1234           = Start podwebserver on localhost:1234",
     "  podwebserver -p 1234 -H blorp  = Start podwebserver on blorp:1234",
     "  podwebserver -t 3600           = Auto-exit after 3600 seconds. 0: Never exit. Default: 18000",
@@ -239,8 +254,8 @@ sub prep_lookup_table {
 			print " Indexing all of @$dir_include -- this might take a minute.\n";
 		}
 		else {
-			print " Indexing all of \@INC -- this might take a minute.\n",
-				"\@INC = [ @INC ]\n";
+			print " Indexing all of \@INC -- this might take a minute.\n";
+			DEBUG > 1 and print	"\@INC = [ @INC ]\n";
 		}
       $self->{'httpd_has_noted_inc_already'} ++;
     }
@@ -249,7 +264,7 @@ sub prep_lookup_table {
 
 	# Filter out excluded folders
 	while ( my ($key, $value) = each %$m2p ) {
-		print "-e $value, " .  grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude }; print "\n";
+		DEBUG > 1 and print "-e $value, " .  grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude }; print "\n";
 		delete $m2p->{$key} if grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude };
 	}
 
@@ -583,12 +598,13 @@ __END__
 
 =head1 NAME
 
-Pod::Webserver -- minimal web server to serve local Perl documentation
+Pod::Webserver -- Minimal web server for local Perl documentation
 
 =head1 SYNOPSIS
 
   % podwebserver
-  You can now point your browser at http://localhost:8020/
+  ...
+  You can now open your browser to http://localhost:8020/
 
 =head1 DESCRIPTION
 
@@ -597,9 +613,6 @@ minimal web server to serve local Perl documentation.  It's like
 L<perldoc> except it works through your browser.
 
 Run F<podwebserver -h> for a list of runtime options.
-
-
-
 
 =head1 SECURITY (AND @INC)
 
@@ -671,8 +684,6 @@ Note that even when "." isn't indexed, the Pod in files under it are
 still accessible -- just as if you'd typed "perldoc whatever" and got
 the Pod in F<./whatever.pl>
 
-
-
 =head1 SEE ALSO
 
 This module is implemented using many CPAN modules,
@@ -680,7 +691,6 @@ including: L<Pod::Simple::HTMLBatch> L<Pod::Simple::HTML>
 L<Pod::Simple::Search> L<Pod::Simple>
 
 See also L<Pod::Perldoc> and L<http://search.cpan.org/>
-
 
 =head1 COPYRIGHT AND DISCLAIMERS
 
@@ -695,9 +705,9 @@ merchantability or fitness for a particular purpose.
 
 =head1 AUTHOR
 
-Original author: Sean M. Burke C<sburke@cpan.org>
+Original author: Sean M. Burke C<sburke@cpan.org>.
 
-Maintained by: Allison Randal C<allison@perl.org>
+Maintained by: Allison Randal C<allison@perl.org> and Ron Savage C<ron@savage.net.au>.
 
 =cut
 

@@ -1,11 +1,7 @@
+use strict;
+use warnings;
 
-require 5;
-# Time-stamp: "2004-05-25 17:46:37 ADT"
-
-# Summary of, well, things.
-
-use Test;
-BEGIN {plan tests => 2};
+use Test::More tests => 2;
 
 ok 1;
 
@@ -39,9 +35,9 @@ use Pod::Webserver;
     next if $this eq 'main'; # %main:: is %::
 
     #print "Peeking at $this => ${$this . '::VERSION'}\n";
-    
-    if(defined ${$this . '::VERSION'} ) {
-      $v{$this} = ${$this . '::VERSION'}
+
+    if(defined $this . '::VERSION') {
+      $v{$this} = $this . '::VERSION';
     } elsif(
        defined *{$this . '::ISA'} or defined &{$this . '::import'}
        or ($this ne '' and grep defined *{$_}{'CODE'}, values %{$this . "::"})
@@ -53,15 +49,15 @@ use Pod::Webserver;
       # It's probably an unpopulated package.
       ## $v{$this} = '...';
     }
-    
-    $pref = length($this) ? "$this\::" : '';
-    push @stack, map m/^(.+)::$/ ? "$pref$1" : (), keys %{$this . '::'};
+
+    $pref = length($this) ? ($this . '::') : '';
+    push @stack, map m/^(.+)::$/ ? "$pref$1" : (), keys %{$this || {} };
     #print "Stack: @stack\n";
   }
   push @out, " Modules in memory:\n";
   delete @v{'', '[none]'};
   foreach my $p (sort {lc($a) cmp lc($b)} keys %v) {
-    $indent = ' ' x (2 + ($p =~ tr/:/:/));
+    my($indent) = ' ' x (2 + ($p =~ tr/:/:/));
     push @out,  '  ', $indent, $p, defined($v{$p}) ? " v$v{$p};\n" : ";\n";
   }
   push @out, sprintf "[at %s (local) / %s (GMT)]\n",

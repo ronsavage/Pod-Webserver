@@ -1,5 +1,3 @@
-# Time-stamp: "2004-05-25 19:06:13 ADT"
-require 5;
 use 5.004; # sane minimum, I think
 use strict;
 use warnings;
@@ -12,7 +10,7 @@ WriteMakefile(
 
  'NAME'	=> 'Pod::Webserver',
  'VERSION_FROM' => 'lib/Pod/Webserver.pm', # finds $VERSION
- 'ABSTRACT'  => 'a miniature web server for reading Pod in web browsers',
+ 'ABSTRACT'  => 'Minimal web server for local Perl documentation',
  'EXE_FILES' => [qw( podwebserver )],
 
  'PREREQ_PM' => {
