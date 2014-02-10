@@ -466,8 +466,7 @@ sub content_ref {
 #==========================================================================
 
 package Pod::Webserver::Daemon;
-use vars qw( $VERSION );
-$VERSION = '3.05';
+our $VERSION = '3.06';
 use Socket qw(PF_INET SOCK_STREAM SOMAXCONN inet_aton sockaddr_in);
 
 sub new {
@@ -621,7 +620,23 @@ This module can be run as an application that works as a
 minimal web server to serve local Perl documentation.  It's like
 L<perldoc> except it works through your browser.
 
-Run F<podwebserver -h> for a list of runtime options.
+C<podwebserver -h> displays help:
+
+	Pod::Webserver version 3.06
+	 Running under perl version 5.018002 for linux
+	Usage:
+	  podwebserver                   = Start podwebserver on localhost:8020. Search @INC
+	  podwebserver -p 1234           = Start podwebserver on localhost:1234
+	  podwebserver -p 1234 -H blorp  = Start podwebserver on blorp:1234
+	  podwebserver -t 3600           = Auto-exit in 1 hour. Default => 18000 (5 hours). 0 => No timeout
+	  podwebserver -d /path/to/lib   = Ignore @INC, and only search within /path/to/lib
+	  podwebserver -e /path/to/skip  = Exclude /path/to/skip files
+	  podwebserver -q                = Quick startup (but no Table of Contents)
+	  podwebserver -v                = Run with verbose output to STDOUT
+	  podwebserver -h                = See this message
+	  podwebserver -V                = Show version information
+
+	Run 'perldoc Pod::Webserver' for more information.
 
 =head1 SECURITY (AND @INC)
 
