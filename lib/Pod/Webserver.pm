@@ -43,6 +43,7 @@ sub httpd {
   $self = $self->new unless ref $self;
   $self->{'_batch_start_time'} = time();
   $self->_get_options;
+  $self->_init_options;
 
   $self->contents_file('/');
   $self->prep_for_daemon;
@@ -64,9 +65,8 @@ sub _get_options {
   return unless @ARGV;
   require Getopt::Std;
   my %o;
-  die "Aborting" unless
 
-  Getopt::Std::getopts( "d:e:H:hp:qt:Vv" => \%o ) || die "Aborting\n";
+  Getopt::Std::getopts( "d:e:H:hp:qt:Vv" => \%o ) || die "Failed to parse options\n";
 
   # The 2 switches that shortcut the run:
   $o{'h'} and exit( $self->_arg_h || 0);
@@ -75,23 +75,8 @@ sub _get_options {
   $self->_arg_h, exit(0) if ($o{p} and ($o{p} !~ /^\d+$/) );
   $self->_arg_h, exit(0) if ($o{t} and ($o{t} !~ /^\d+$/) );
 
-  if ($o{'e'})
-  {
-	$self->dir_exclude( [ map File::Spec->canonpath($_), split(/:|;/, $o{'e'}) ] );
-  }
-  else
-  {
-	$self->dir_exclude( [] );
-  }
-
-  if ($o{'d'})
-  {
-	$self->dir_include( [ map File::Spec->canonpath($_), split(/:|;/, $o{'d'}) ] );
-  }
-  else
-  {
-	$self->dir_include( [@INC] );
-  }
+  $self->dir_exclude( [ map File::Spec->canonpath($_), split(/:|;/, $o{'e'}) ] ) if ($o{'e'});
+  $self->dir_include( [ map File::Spec->canonpath($_), split(/:|;/, $o{'d'}) ] ) if ($o{'d'});
 
   $self->httpd_host( $o{'H'} )		if $o{'H'};
   $self->httpd_port( $o{'p'} )		if $o{'p'};
@@ -102,6 +87,15 @@ sub _get_options {
 
   return;
 }
+
+sub _init_options
+{
+  my($self) = shift;
+
+  $self->dir_exclude([]);
+  $self->dir_include([@INC]);
+
+} # End of _init_options.
 
 sub _arg_h {
   my $class = ref($_[0]) || $_[0];
@@ -202,7 +196,7 @@ sub new_daemon {
   }
 
   $self->muse( "Starting daemon with options {@opts}" );
-  Pod::Webserver::Daemon->new(@opts) || die "Can't start a daemon: $!\nAborting";
+  Pod::Webserver::Daemon->new(@opts) || die "Can't start a daemon: $!\n";
 }
 
 #==========================================================================
@@ -258,12 +252,12 @@ sub prep_lookup_table {
     my $search = $Pod::Simple::HTMLBatch::SEARCH_CLASS->new;
 	my $dir_include = $self->dir_include;
     if(DEBUG > -1) {
-		if ($self->dir_include) {
+		if ($#{$self->dir_include} >= 0) {
 			print " Indexing all of @$dir_include -- this might take a minute.\n";
 		}
 		else {
 			print " Indexing all of \@INC -- this might take a minute.\n";
-			DEBUG > 1 and print	"\@INC = [ @INC ]\n";
+			DEBUG > 1 and print "\@INC = [ @INC ]\n";
 		}
       $self->{'httpd_has_noted_inc_already'} ++;
     }
@@ -272,14 +266,13 @@ sub prep_lookup_table {
 
 	# Filter out excluded folders
 	while ( my ($key, $value) = each %$m2p ) {
-		DEBUG > 1 and print "-e $value, " .  grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude }; print "\n";
+		DEBUG > 1 and print "-e $value, ",  (grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude }), "\n";
 		delete $m2p->{$key} if grep $value =~ /^\Q$_\E/, @{ $self->dir_exclude };
 	}
 
     die "Missing path\n" unless $m2p and keys %$m2p;
-    DEBUG > -1 and print " Done scanning \@INC\n";
-	DEBUG > -1 and print " Done scanning ",
-		$dir_include ? "@$dir_include" : '@INC', "\n";
+
+	DEBUG > -1 and print " Done scanning \n";
 
     foreach my $modname (sort keys %$m2p) {
       my @namelets = split '::', $modname;
@@ -288,15 +281,19 @@ sub prep_lookup_table {
     $self->write_contents_file('crunkBase');
   }
   $self->{'__modname2path'} = $m2p || {};
+
   return;
-}
+
+} # End of prep_lookup_table.
 
 sub write_contents_file {
   my $self = shift;
   $Pod::Simple::HTMLBatch::HTML_EXTENSION
      = $Pod::Simple::HTML::HTML_EXTENSION = '';
+
   return $self->SUPER::write_contents_file(@_);
-}
+
+} # End of write_contents_file.
 
 #==========================================================================
 
@@ -476,14 +473,14 @@ sub new {
   # Anonymous file handles the 5.004 way:
   my $sock = do {local *SOCK; \*SOCK};
 
-  my $proto = getprotobyname('tcp') or die "getprotobyname: $!";
-  socket($sock, PF_INET, SOCK_STREAM, $proto) or die "Can't create socket: $!";
+  my $proto = getprotobyname('tcp') or die "Error in getprotobyname: $!\n";
+  socket($sock, PF_INET, SOCK_STREAM, $proto) or die "Can't create socket: $!\n";
   my $host = inet_aton($self->{LocalHost})
-    or die "Can't resolve hostname '$self->{LocalHost}'";
+    or die "Can't resolve hostname '$self->{LocalHost}'\n";
   my $sin = sockaddr_in($self->{LocalPort}, $host);
   bind $sock, $sin
-    or die "Couldn't bind to $self->{LocalHost}:$self->{LocalPort}: $!";
-  listen $sock, SOMAXCONN or die "Couldn't listen: $!";
+    or die "Couldn't bind to $self->{LocalHost}:$self->{LocalPort}: $!\n";
+  listen $sock, SOMAXCONN or die "Couldn't listen on socket: $!\n";
 
   $self->{__sock} = $sock;
 
@@ -512,7 +509,7 @@ sub accept {
 
       my $got = do {local *GOT; \*GOT};
       #$! = "";
-      accept $got, $sock or die "accept failed: $!";
+      accept $got, $sock or die "Error: accept failed: $!\n";
       return Pod::Webserver::Connection->new($got);
     }
   } while (time < $end);

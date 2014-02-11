@@ -6,7 +6,7 @@ Makefile.PL
 MANIFEST
 META.json
 META.yml			Module meta-data (added by MakeMaker)
-podwebserver
+bin/podwebserver
 README
 t/about_verbose.t
 t/daemon.t
