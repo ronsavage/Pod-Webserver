@@ -1,3 +1,4 @@
+bin/podwebserver
 Build.PL
 Changelog.ini
 Changes
@@ -6,7 +7,6 @@ Makefile.PL
 MANIFEST
 META.json
 META.yml			Module meta-data (added by MakeMaker)
-bin/podwebserver
 README
 t/about_verbose.t
 t/daemon.t
