@@ -26,7 +26,7 @@ my(%params) =
 		SUFFIX   => 'gz'
 	},
 	DISTNAME  => 'Pod-Webserver',
-	EXE_FILES => ['podwebserver'],
+	EXE_FILES => ['bin/podwebserver'],
 	NAME      => 'Pod::Webserver',
 	PL_FILES  => {},
 	PREREQ_PM =>
