@@ -90,7 +90,7 @@ sub _get_options {
   }
   else
   {
-	$self->dir_include( [] );
+	$self->dir_include( [@INC] );
   }
 
   $self->httpd_host( $o{'H'} )		if $o{'H'};
