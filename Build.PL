@@ -58,5 +58,6 @@ $class -> new
 	{
 		bugtracker => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Pod-Webserver',
 		license    => 'http://opensource.org/licenses/Artistic-2.0',
+		repository => 'https://github.com/ronsavage/Pod--Webserver',
 	},
 ) -> create_build_script();
