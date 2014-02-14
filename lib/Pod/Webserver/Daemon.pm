@@ -5,7 +5,7 @@ use warnings;
 
 use Pod::Webserver::Connection;
 
-our $VERSION = '3.07';
+our $VERSION = '3.08';
 
 use Socket qw(PF_INET SOCK_STREAM SOMAXCONN inet_aton sockaddr_in);
 

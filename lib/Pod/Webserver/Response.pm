@@ -3,7 +3,7 @@ package Pod::Webserver::Response;
 use strict;
 use warnings;
 
-our $VERSION = '3.07';
+our $VERSION = '3.08';
 
 # ------------------------------------------------
 # The real methods are setter/getters. We only need the setters.

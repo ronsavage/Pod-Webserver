@@ -14,7 +14,7 @@ use IO::Socket;
 use File::Spec;
 use File::Spec::Unix ();
 
-our $VERSION = '3.07';
+our $VERSION = '3.08';
 
 # ------------------------------------------------
 

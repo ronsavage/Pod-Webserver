@@ -16,8 +16,8 @@ BEGIN {
 # When run with the single argument 'client', the test script should run
 # a dummy client and exit.
 my $mode = shift || '';
+my $port = $ENV{'PODWEBSERVERPORT'} || 39383;
 if ($mode eq 'client') {
-    my $port = $ENV{'PODWEBSERVERPORT'} || 8020;
     my $sock = IO::Socket::INET->new("localhost:$port")
       or die "Couldn't connect to localhost:$port: $!";
     send ($sock,"GET Pod/Simple HTTP/1.0\15\12", 0x4);
@@ -33,7 +33,7 @@ $ws->dir_exclude([]);
 $ws->dir_include([@INC]);
 $ws->verbose(0);
 $ws->httpd_timeout(10);
-$ws->httpd_port($ENV{'PODWEBSERVERPORT'}) if ($ENV{'PODWEBSERVERPORT'});
+$ws->httpd_port($port);
 $ws->prep_for_daemon;
 my $daemon;
 eval { $daemon = $ws->new_daemon; };

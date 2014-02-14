@@ -1,5 +1,9 @@
 Revision history for Perl module Pod::Webserver:
 
+3.08  Fri Feb 14 13:28:00 2014
+	- Change t/daemon.t to use $ENV{PODWBSERVERPORT} || 39383, not 8020, for both server and client.
+		This means tests run even if 'podwebserver' is aleady running.
+
 3.07  Fri Feb 14 12:00:00 2014
 	- Split out each package into its own file.
 	- Rearrange methods per file into alphabetical order.
