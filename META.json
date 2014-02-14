@@ -43,23 +43,23 @@
    "provides" : {
       "Pod::Webserver" : {
          "file" : "lib/Pod/Webserver.pm",
-         "version" : "3.07"
+         "version" : "3.08"
       },
       "Pod::Webserver::Connection" : {
          "file" : "lib/Pod/Webserver/Connection.pm",
-         "version" : "3.07"
+         "version" : "3.08"
       },
       "Pod::Webserver::Daemon" : {
          "file" : "lib/Pod/Webserver/Daemon.pm",
-         "version" : "3.07"
+         "version" : "3.08"
       },
       "Pod::Webserver::Request" : {
          "file" : "lib/Pod/Webserver/Request.pm",
-         "version" : "3.07"
+         "version" : "3.08"
       },
       "Pod::Webserver::Response" : {
          "file" : "lib/Pod/Webserver/Response.pm",
-         "version" : "3.07"
+         "version" : "3.08"
       }
    },
    "release_status" : "stable",
@@ -68,5 +68,5 @@
          "http://www.perlfoundation.org/artistic_license_2_0"
       ]
    },
-   "version" : "3.07"
+   "version" : "3.08"
 }
