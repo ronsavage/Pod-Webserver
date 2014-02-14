@@ -1,5 +1,9 @@
 Revision history for Perl module Pod::Webserver:
 
+3.07  2014-02-14
+	- Split out each package into its own file.
+	- Rearrange methods per file into alphabetical order.
+
 3.06  2014-02-10
 	- Ron Savage is now co-maint.
 	- Remove 'require 5;' from the source. If you're running Perl V 4, you'll have even more problems now.

@@ -1,19 +1,11 @@
 package Pod::Webserver;
 
+use parent 'Pod::Simple::HTMLBatch';
 use strict;
 use vars qw( $VERSION @ISA );
 
-our $VERSION = '3.06';
-
-BEGIN {
-  if(defined &DEBUG) { } # no-op
-  elsif( defined &Pod::Simple::DEBUG ) { *DEBUG = \&Pod::Simple::DEBUG }
-  elsif( ($ENV{'PODWEBSERVERDEBUG'} || '') =~ m/^(\d+)$/ )
-    { my $x = $1; *DEBUG = sub(){$x} }
-  else { *DEBUG = sub () {0}; }
-}
-
-#sub Pod::Simple::HTMLBatch::DEBUG () {5}
+use Pod::Webserver::Daemon;
+use Pod::Webserver::Response;
 
 use Pod::Simple::HTMLBatch;
 use Pod::Simple::TiedOutFH;
@@ -21,43 +13,102 @@ use Pod::Simple;
 use IO::Socket;
 use File::Spec;
 use File::Spec::Unix ();
-@ISA = ('Pod::Simple::HTMLBatch');
 
-__PACKAGE__->Pod::Simple::_accessorize(
-	'dir_include',
-	'dir_exclude',
-	'httpd_port',
-	'httpd_host',
-	'httpd_timeout',
-	'skip_indexing',
-);
+our $VERSION = '3.07';
 
-httpd() unless caller;
+# ------------------------------------------------
 
-# Run me as:  perl -MPod::HTTP -e Pod::Webserver::httpd
-# or (assuming you have it installed), just run "podwebserver"
-#==========================================================================
+BEGIN {
+  if(defined &DEBUG) { } # no-op
+  elsif( defined &Pod::Simple::DEBUG ) { *DEBUG = \&Pod::Simple::DEBUG }
+  elsif( ($ENV{'PODWEBSERVERDEBUG'} || '') =~ m/^(\d+)$/ )
+    { my $x = $1; *DEBUG = sub(){$x} }
+  else { *DEBUG = sub () {0}; }
 
-sub httpd {
-  my $self = @_ ? shift(@_) : __PACKAGE__;
-  $self = $self->new unless ref $self;
-  $self->{'_batch_start_time'} = time();
-  $self->_get_options;
-  $self->_init_options;
+} # End of BEGIN.
 
-  $self->contents_file('/');
-  $self->prep_for_daemon;
+# ------------------------------------------------
 
-  my $daemon = $self->new_daemon || return;
-  my $url = $daemon->url;
-  $url =~ s{//default\b}{//localhost} if $^O =~ m/Win32/; # lame hack
+#sub Pod::Simple::HTMLBatch::DEBUG () {5}
 
-  DEBUG > -1 and print "You can now open your browser to $url\n";
+# ------------------------------------------------
 
-  return $self->run_daemon($daemon);
-}
+sub add_to_fs {  # add an item to my virtual in-memory filesystem
+  my($self,$file,$type,$content) = @_;
 
-#==========================================================================
+  die "Missing filespec\n" unless defined $file and length $file;
+  $file = "/$file";
+  $file =~ s{/+}{/}s;
+  $type ||=
+     $file eq '/'        ? 'text/html' # special case
+   : $file =~ m/\.dat?/  ? 'application/octet-stream'
+   : $file =~ m/\.html?/ ? 'text/html'
+   : $file =~ m/\.txt/   ? 'text/plain'
+   : $file =~ m/\.gif/   ? 'image/gif'
+   : $file =~ m/\.jpe?g/ ? 'image/jpeg'
+   : $file =~ m/\.png/   ? 'image/png'
+   : 'text/plain'
+  ;
+  $content = '' unless defined '';
+     $self->{'__daemon_fs'}{"\e$file"} = $type;
+  \( $self->{'__daemon_fs'}{$file} = $content );
+
+} # End of add_to_fs.
+
+# ------------------------------------------------
+
+sub _arg_h {
+  my $class = ref($_[0]) || $_[0];
+  $_[0]->_arg_V;
+  print join "\n",
+    "Usage:",
+    "  podwebserver                   = Start podwebserver on localhost:8020. Search \@INC",
+    "  podwebserver -p 1234           = Start podwebserver on localhost:1234",
+    "  podwebserver -p 1234 -H blorp  = Start podwebserver on blorp:1234",
+    "  podwebserver -t 3600           = Auto-exit in 1 hour. Default => 18000 (5 hours). 0 => No timeout",
+	"  podwebserver -d /path/to/lib   = Ignore \@INC, and only search within /path/to/lib",
+	"  podwebserver -e /path/to/skip  = Exclude /path/to/skip files",
+    "  podwebserver -q                = Quick startup (but no Table of Contents)",
+    "  podwebserver -v                = Run with verbose output to STDOUT",
+    "  podwebserver -h                = See this message",
+    "  podwebserver -V                = Show version information",
+    "\nRun 'perldoc $class' for more information.",
+  "";
+  return;
+
+} # End of _arg_h.
+
+# ------------------------------------------------
+
+sub _arg_V {
+  my $class = ref($_[0]) || $_[0];
+  #
+  # Anything else particularly useful to report here?
+  #
+  print '', __PACKAGE__, " version $VERSION",
+    # and report if we're running a subclass:
+    (__PACKAGE__ eq $class) ? () : (" ($class)"),
+    "\n",
+  ;
+  print " Running under perl version $] for $^O",
+    (chr(65) eq 'A') ? "\n" : " in a non-ASCII world\n";
+  print " Win32::BuildNumber ", &Win32::BuildNumber(), "\n"
+    if defined(&Win32::BuildNumber) and defined &Win32::BuildNumber();
+  print " MacPerl verison $MacPerl::Version\n"
+    if defined $MacPerl::Version;
+  return;
+
+} # End of _arg_V.
+
+# ------------------------------------------------
+
+sub _contents_filespec { return '/' } # overriding the superclass's
+
+# ------------------------------------------------
+
+sub filespecsys { $_[0]{'_filespecsys'} || 'File::Spec::Unix' }
+
+# ------------------------------------------------
 
 sub _get_options {
   my($self) = shift;
@@ -86,7 +137,35 @@ sub _get_options {
   $self->verbose(4)					if $o{'v'};
 
   return;
-}
+
+} # End of _get_options.
+
+# ------------------------------------------------
+
+# Run me as:  perl -MPod::HTTP -e Pod::Webserver::httpd
+# or (assuming you have it installed), just run "podwebserver"
+
+sub httpd {
+  my $self = @_ ? shift(@_) : __PACKAGE__;
+  $self = $self->new unless ref $self;
+  $self->{'_batch_start_time'} = time();
+  $self->_get_options;
+  $self->_init_options;
+
+  $self->contents_file('/');
+  $self->prep_for_daemon;
+
+  my $daemon = $self->new_daemon || return;
+  my $url = $daemon->url;
+  $url =~ s{//default\b}{//localhost} if $^O =~ m/Win32/; # lame hack
+
+  DEBUG > -1 and print "You can now open your browser to $url\n";
+
+  return $self->run_daemon($daemon);
+
+} # End of httpd.
+
+# ------------------------------------------------
 
 sub _init_options
 {
@@ -97,84 +176,16 @@ sub _init_options
 
 } # End of _init_options.
 
-sub _arg_h {
-  my $class = ref($_[0]) || $_[0];
-  $_[0]->_arg_V;
-  print join "\n",
-    "Usage:",
-    "  podwebserver                   = Start podwebserver on localhost:8020. Search \@INC",
-    "  podwebserver -p 1234           = Start podwebserver on localhost:1234",
-    "  podwebserver -p 1234 -H blorp  = Start podwebserver on blorp:1234",
-    "  podwebserver -t 3600           = Auto-exit in 1 hour. Default => 18000 (5 hours). 0 => No timeout",
-	"  podwebserver -d /path/to/lib   = Ignore \@INC, and only search within /path/to/lib",
-	"  podwebserver -e /path/to/skip  = Exclude /path/to/skip files",
-    "  podwebserver -q                = Quick startup (but no Table of Contents)",
-    "  podwebserver -v                = Run with verbose output to STDOUT",
-    "  podwebserver -h                = See this message",
-    "  podwebserver -V                = Show version information",
-    "\nRun 'perldoc $class' for more information.",
-  "";
-  return;
-}
+# ------------------------------------------------
 
-sub _arg_V {
-  my $class = ref($_[0]) || $_[0];
-  #
-  # Anything else particularly useful to report here?
-  #
-  print '', __PACKAGE__, " version $VERSION",
-    # and report if we're running a subclass:
-    (__PACKAGE__ eq $class) ? () : (" ($class)"),
-    "\n",
-  ;
-  print " Running under perl version $] for $^O",
-    (chr(65) eq 'A') ? "\n" : " in a non-ASCII world\n";
-  print " Win32::BuildNumber ", &Win32::BuildNumber(), "\n"
-    if defined(&Win32::BuildNumber) and defined &Win32::BuildNumber();
-  print " MacPerl verison $MacPerl::Version\n"
-    if defined $MacPerl::Version;
-  return;
-}
+sub makepath { return }               # overriding the superclass's
 
-#==========================================================================
+# ------------------------------------------------
 
-sub _serve_pod {
-  my($self, $modname, $filename, $resp) = @_;
-  unless( -e $filename and -r _ and -s _ ) { # sanity
-    $self->muse( "But filename $filename is no good!" );
-    return;
-  }
+#sub muse { return 1 }
 
-  my $modtime = (stat(_))[9];  # use my own modtime whynot!
-  $resp->content('');
-  my $contr = $resp->content_ref;
+# ------------------------------------------------
 
-  $Pod::Simple::HTMLBatch::HTML_EXTENSION
-     = $Pod::Simple::HTML::HTML_EXTENSION = '';
-
-  $resp->header('Last-Modified' => time2str($modtime) );
-
-  my $retval;
-  if(
-    # This is totally gross and hacky.  So unless your name rhymes
-    #  with "Pawn Lurk", you have to cover your eyes right now.
-    $retval =
-    $self->_do_one_batch_conversion(
-      $modname,
-      { $modname => $filename },
-      '/',
-      Pod::Simple::TiedOutFH->handle_on($contr),
-    )
-  ) {
-    $self->muse( "$modname < $filename" );
-  } else {
-    $self->muse( "Ugh, couldn't convert $modname"  );
-  }
-
-  return $retval;
-}
-
-#==========================================================================
 sub new_daemon {
   my $self = shift;
 
@@ -197,9 +208,10 @@ sub new_daemon {
 
   $self->muse( "Starting daemon with options {@opts}" );
   Pod::Webserver::Daemon->new(@opts) || die "Can't start a daemon: $!\n";
-}
 
-#==========================================================================
+} # End of _new_daemon.
+
+# ------------------------------------------------
 
 sub prep_for_daemon {
   my($self) = shift;
@@ -229,9 +241,10 @@ sub prep_for_daemon {
   $self->prep_lookup_table();
 
   return;
-}
 
-#==========================================================================
+} # End of prep_for_daemon.
+
+# ------------------------------------------------
 
 sub prep_lookup_table {
   my $self = shift;
@@ -286,51 +299,7 @@ sub prep_lookup_table {
 
 } # End of prep_lookup_table.
 
-sub write_contents_file {
-  my $self = shift;
-  $Pod::Simple::HTMLBatch::HTML_EXTENSION
-     = $Pod::Simple::HTML::HTML_EXTENSION = '';
-
-  return $self->SUPER::write_contents_file(@_);
-
-} # End of write_contents_file.
-
-#==========================================================================
-
-sub add_to_fs {  # add an item to my virtual in-memory filesystem
-  my($self,$file,$type,$content) = @_;
-
-  die "Missing filespec\n" unless defined $file and length $file;
-  $file = "/$file";
-  $file =~ s{/+}{/}s;
-  $type ||=
-     $file eq '/'        ? 'text/html' # special case
-   : $file =~ m/\.dat?/  ? 'application/octet-stream'
-   : $file =~ m/\.html?/ ? 'text/html'
-   : $file =~ m/\.txt/   ? 'text/plain'
-   : $file =~ m/\.gif/   ? 'image/gif'
-   : $file =~ m/\.jpe?g/ ? 'image/jpeg'
-   : $file =~ m/\.png/   ? 'image/png'
-   : 'text/plain'
-  ;
-  $content = '' unless defined '';
-     $self->{'__daemon_fs'}{"\e$file"} = $type;
-  \( $self->{'__daemon_fs'}{$file} = $content );
-}
-
-sub _wopen {             # overriding the superclass's
-  my($self, $outpath) = @_;
-  return Pod::Simple::TiedOutFH->handle_on( $self->add_to_fs($outpath) );
-}
-
-# All of these are hacky to varying degrees
-sub makepath { return }               # overriding the superclass's
-sub _contents_filespec { return '/' } # overriding the superclass's
-sub url_up_to_contents { return '/' } # overriding the superclass's
-#sub muse { return 1 }
-sub filespecsys { $_[0]{'_filespecsys'} || 'File::Spec::Unix' }
-
-#==========================================================================
+# ------------------------------------------------
 
 sub run_daemon {
   my($self, $daemon) = @_;
@@ -349,9 +318,49 @@ sub run_daemon {
   }
   $self->muse("HTTP Server terminated");
   return;
-}
 
-#==========================================================================
+} # End of run_daemon.
+
+# ------------------------------------------------
+
+sub _serve_pod {
+  my($self, $modname, $filename, $resp) = @_;
+  unless( -e $filename and -r _ and -s _ ) { # sanity
+    $self->muse( "But filename $filename is no good!" );
+    return;
+  }
+
+  my $modtime = (stat(_))[9];  # use my own modtime whynot!
+  $resp->content('');
+  my $contr = $resp->content_ref;
+
+  $Pod::Simple::HTMLBatch::HTML_EXTENSION
+     = $Pod::Simple::HTML::HTML_EXTENSION = '';
+
+  $resp->header('Last-Modified' => time2str($modtime) );
+
+  my $retval;
+  if(
+    # This is totally gross and hacky.  So unless your name rhymes
+    #  with "Pawn Lurk", you have to cover your eyes right now.
+    $retval =
+    $self->_do_one_batch_conversion(
+      $modname,
+      { $modname => $filename },
+      '/',
+      Pod::Simple::TiedOutFH->handle_on($contr),
+    )
+  ) {
+    $self->muse( "$modname < $filename" );
+  } else {
+    $self->muse( "Ugh, couldn't convert $modname"  );
+  }
+
+  return $retval;
+
+} # End of _serve_pod.
+
+# ------------------------------------------------
 
 sub _serve_thing {
   my($self, $conn, $req) = @_;
@@ -407,13 +416,37 @@ sub _serve_thing {
     }
   }
 
-
   $resp ? $conn->send_response( $resp ) : $conn->send_error(404);
 
   return;
-}
 
-#==========================================================================
+} # End of _serve_thing.
+
+# ------------------------------------------------
+
+sub _wopen {             # overriding the superclass's
+  my($self, $outpath) = @_;
+
+  return Pod::Simple::TiedOutFH->handle_on( $self->add_to_fs($outpath) );
+
+} # End of _wopen.
+
+# ------------------------------------------------
+
+sub write_contents_file {
+  my $self = shift;
+  $Pod::Simple::HTMLBatch::HTML_EXTENSION
+     = $Pod::Simple::HTML::HTML_EXTENSION = '';
+
+  return $self->SUPER::write_contents_file(@_);
+
+} # End of write_contents_file.
+
+# ------------------------------------------------
+
+sub url_up_to_contents { return '/' } # overriding the superclass's
+
+# ------------------------------------------------
 
 # Inlined from HTTP::Date to avoid a dependency
 
@@ -431,170 +464,20 @@ sub _serve_thing {
   }
 }
 
-#==========================================================================
+# ------------------------------------------------
 
-package Pod::Webserver::Response;
+__PACKAGE__->Pod::Simple::_accessorize(
+	'dir_include',
+	'dir_exclude',
+	'httpd_port',
+	'httpd_host',
+	'httpd_timeout',
+	'skip_indexing',
+);
 
-sub new {
-  my ($class, $status_code) = @_;
-  bless {code=>$status_code}, $class;
-}
+httpd() unless caller;
 
-sub DESTROY {};
-
-# The real methods are setter/getters. We only need the setters.
-sub AUTOLOAD {
-  my ($attrib) = $Pod::Webserver::Response::AUTOLOAD =~ /([^:]+)$/;
-  $_[0]->{$attrib} = $_[1];
-}
-
-sub header {
-  my $self = shift;
-  push @{$self->{header}}, @_;
-}
-
-# The real method is a setter/getter. We only need the getter.
-sub content_ref {
-  my $self = shift;
-  return \$self->{content};
-}
-
-#==========================================================================
-
-package Pod::Webserver::Daemon;
-our $VERSION = '3.06';
-use Socket qw(PF_INET SOCK_STREAM SOMAXCONN inet_aton sockaddr_in);
-
-sub new {
-  my $class = shift;
-  my $self = {@_};
-  $self->{LocalHost} ||= 'localhost';
-
-  # Anonymous file handles the 5.004 way:
-  my $sock = do {local *SOCK; \*SOCK};
-
-  my $proto = getprotobyname('tcp') or die "Error in getprotobyname: $!\n";
-  socket($sock, PF_INET, SOCK_STREAM, $proto) or die "Can't create socket: $!\n";
-  my $host = inet_aton($self->{LocalHost})
-    or die "Can't resolve hostname '$self->{LocalHost}'\n";
-  my $sin = sockaddr_in($self->{LocalPort}, $host);
-  bind $sock, $sin
-    or die "Couldn't bind to $self->{LocalHost}:$self->{LocalPort}: $!\n";
-  listen $sock, SOMAXCONN or die "Couldn't listen on socket: $!\n";
-
-  $self->{__sock} = $sock;
-
-  bless $self, $class;
-}
-
-sub url {
-  my $self = shift;
-  "http://$self->{LocalHost}:$self->{LocalPort}/";
-}
-
-sub accept {
-  my $self = shift;
-  my $sock = $self->{__sock};
-
-  my $rin = '';
-  vec($rin, fileno($sock), 1) = 1;
-
-  # Sadly getting a valid returned time from select is not portable
-
-  my $end = $self->{Timeout} + time;
-
-  do {
-    if (select ($rin, undef, undef, $self->{Timeout})) {
-      # Ready for reading;
-
-      my $got = do {local *GOT; \*GOT};
-      #$! = "";
-      accept $got, $sock or die "Error: accept failed: $!\n";
-      return Pod::Webserver::Connection->new($got);
-    }
-  } while (time < $end);
-
-  return undef;
-}
-
-#==========================================================================
-
-package Pod::Webserver::Request;
-
-sub new {
-  my $class = shift;
-  bless {@_}, $class
-}
-
-sub url {
-  return $_[0]->{url};
-}
-
-sub method {
-  return $_[0]->{method};
-}
-
-#==========================================================================
-package Pod::Webserver::Connection;
-
-sub new {
-  my ($class, $fh) = @_;
-  bless {__fh => $fh}, $class
-}
-
-sub get_request {
-  my $self = shift;
-
-  my $fh = $self->{__fh};
-
-  my $line = <$fh>;
-  if (!defined $line or !($line =~ m!^([A-Z]+)\s+(\S+)\s+HTTP/1\.\d+!)) {
-    $self->send_error(400);
-    return;
-  }
-
-  return Pod::Webserver::Request->new(method=>$1, url=>$2);
-}
-
-sub send_error {
-  my ($self, $status_code) = @_;
-
-  my $message = "HTTP/1.0 $status_code HTTP error code $status_code\n" .
-    "Date: " . Pod::Webserver::time2str(time) . "\n" . <<"EOM";
-Content-Type: text/plain
-
-Something went wrong, generating code $status_code.
-EOM
-
-  $message =~ s/\n/\15\12/gs;
-
-  print {$self->{__fh}} $message;
-}
-
-sub send_response {
-  my ($self, $response) = @_;
-
-  my $message = "HTTP/1.0 200 OK\n"
-    . "Date: " . Pod::Webserver::time2str(time) . "\n"
-    . "Content-Type: $response->{content_type}\n";
-
-  # This is destructive, but for our local purposes it doesn't matter
-  while (my ($name, $value) = splice @{$response->{header}}, 0, 2) {
-    $message .= "$name: $value\n";
-  }
-
-  $message .= "\n$response->{content}";
-
-  $message =~ s/\n/\15\12/gs;
-
-  print {$self->{__fh}} $message;
-}
-
-sub close {
-  close $_[0]->{__fh};
-}
-
-#==========================================================================
+# ------------------------------------------------
 
 1;
 
