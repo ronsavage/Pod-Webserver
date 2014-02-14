@@ -1,10 +1,11 @@
 Revision history for Perl module Pod::Webserver:
 
-3.07  2014-02-14
+3.07  Fri Feb 14 12:00:00 2014
 	- Split out each package into its own file.
 	- Rearrange methods per file into alphabetical order.
+	- Clean up datestamps in this file.
 
-3.06  2014-02-10
+3.06  Mon Feb 10 12:00:00 2014
 	- Ron Savage is now co-maint.
 	- Remove 'require 5;' from the source. If you're running Perl V 4, you'll have even more problems now.
 	- Add a -t (timeout) parameter. The unit is seconds. Timeout defaults (as always) to 18,000 = 5 hours.
@@ -35,23 +36,23 @@ Revision history for Perl module Pod::Webserver:
 	- Rename ChangeLog to Changes.
 	- Add Changelog.ini (output of ini.report.pl).
 
-3.05  2008-01-09
+3.05  Wed Jan 09 12:00:00 2008
 	- Allison Randal <allison@perl.org>
 	- Added an explicit VERSION to Pod::Webserver::Daemon, to pass the tests on Perl version 5.10.0.
 
-3.04  2006-09-12
+3.04  Tue Sep 12 12:00:00 2006
 	- Allison Randal <allison@perl.org>
 	- Applied a patch from Nicholas Clark to eliminate the dependency on LWP, so the module
 		could be incorporated into the Perl core. Mad props to Nick for the networking code!
 
-3.03  2004-06-20
+3.03  Sun Jun 20 12:00:00 2004
 	- Sean M. Burke <sburke@cpan.org>
 	- No code changes; I merely added some extra docs about -T and security and @INC things.
 	- Thanks for all your supportive email!  I am surprised by what a hit this module has become!
 
-3.02  2004-05-25
+3.02  Tue May 25 12:00:00 2004
 	- Sean M. Burke <sburke@cpan.org>
 	- First released version.
 
-1.00  2004-05-25
+1.00  Mon May 24 12:00:00 2004
 	- Sean M. Burke <sburke@cpan.org>
