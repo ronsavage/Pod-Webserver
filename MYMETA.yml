@@ -17,16 +17,19 @@ name: Pod-Webserver
 provides:
   Pod::Webserver:
     file: lib/Pod/Webserver.pm
-    version: 3.06
+    version: 3.07
   Pod::Webserver::Connection:
-    file: lib/Pod/Webserver.pm
+    file: lib/Pod/Webserver/Connection.pm
+    version: 3.07
   Pod::Webserver::Daemon:
-    file: lib/Pod/Webserver.pm
-    version: 3.06
+    file: lib/Pod/Webserver/Daemon.pm
+    version: 3.07
   Pod::Webserver::Request:
-    file: lib/Pod/Webserver.pm
+    file: lib/Pod/Webserver/Request.pm
+    version: 3.07
   Pod::Webserver::Response:
-    file: lib/Pod/Webserver.pm
+    file: lib/Pod/Webserver/Response.pm
+    version: 3.07
 requires:
   File::Spec: 0
   File::Spec::Unix: 0
@@ -40,4 +43,4 @@ requires:
   warnings: 0
 resources:
   license: http://www.perlfoundation.org/artistic_license_2_0
-version: 3.06
+version: 3.07
