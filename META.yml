@@ -4,6 +4,7 @@ author:
   - 'Sean M. Burke C<sburke@cpan.org>'
 build_requires:
   Test::More: 0.94
+  Test::TCP: 2.02
   Test::Version: 1.002003
 configure_requires:
   Module::Build: 0.38

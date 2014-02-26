@@ -41,6 +41,7 @@ my(%params) =
 		'strict'                 => 0,
 		'Test::More'             => 0.94,
 #	 	'Test::Pod'              => 1.45, # Make it optional. See xt/author/pod.t
+		'Test::TCP'              => 2.02,
 		'Test::Version'          => 1.002003,
 		'warnings'               => 0,
 	},

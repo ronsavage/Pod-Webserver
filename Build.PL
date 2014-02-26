@@ -33,9 +33,10 @@ $class -> new
 	dist_author    => 'Sean M. Burke C<sburke@cpan.org>',
 	build_requires =>
 	{
-		'Test::More'    => 0.94,
-# 	 	'Test::Pod'     => 1.45, # Make it optional. See t/pod.t
-		'Test::Version' => 1.002003,
+		'Test::More'     => 0.94,
+# 	 	'Test::Pod'      => 1.45, # Make it optional. See t/pod.t
+		'Test::TCP'      => 2.02,
+		'Test::Version'  => 1.002003,
 	},
 	configure_requires =>
 	{

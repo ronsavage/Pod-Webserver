@@ -1,5 +1,9 @@
 Revision history for Perl module Pod::Webserver:
 
+3.09  Wed Feb 26 15:53:00 2014
+	- Use Test::TCP's Net::EmptyPort to pick a port to use for testing. See daemon.t.
+		Note: The env var $PODWEBSERVERPORT (used only for testing) still takes precedence.
+
 3.08  Fri Feb 14 13:28:00 2014
 	- Change t/daemon.t to use $ENV{PODWBSERVERPORT} || 39383, not 8020, for both server and client.
 		This means tests run even if 'podwebserver' is aleady running.

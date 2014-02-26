@@ -5,7 +5,7 @@ use warnings;
 
 use Pod::Webserver::Request;
 
-our $VERSION = '3.08';
+our $VERSION = '3.09';
 
 # ------------------------------------------------
 

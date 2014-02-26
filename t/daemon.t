@@ -5,6 +5,8 @@ use IO::Socket;
 
 use Test::More tests => 8;
 
+use Net::EmptyPort 'empty_port';
+
 BEGIN {
     chdir "t" if -e "t";
     if($ENV{PERL_CORE}) {
@@ -12,11 +14,12 @@ BEGIN {
     } else {
         push @INC, '../lib';
     }
+	$ENV{'PODWEBSERVERPORT'} = empty_port() if (! $ENV{'PODWEBSERVERPORT'});
 }
 # When run with the single argument 'client', the test script should run
 # a dummy client and exit.
 my $mode = shift || '';
-my $port = $ENV{'PODWEBSERVERPORT'} || 39383;
+my $port = $ENV{'PODWEBSERVERPORT'};
 if ($mode eq 'client') {
     my $sock = IO::Socket::INET->new("localhost:$port")
       or die "Couldn't connect to localhost:$port: $!";
@@ -62,7 +65,7 @@ close CLIENT;
 
 # Test the response from the daemon.
 my $testfile = 'dummysocket.txt';
-open(DUMMY, ">$testfile");
+open(DUMMY, '>', $testfile);
 $conn = Pod::Webserver::Connection->new(*DUMMY);
 $ws->_serve_thing($conn, $req);
 $conn->close;
