@@ -66,7 +66,7 @@ close $fh;
 # Test the response from the daemon.
 my $testfile = 'dummysocket.txt';
 open($fh, '>', $testfile);
-$conn = Pod::Webserver::Connection->new(*DUMMY);
+$conn = Pod::Webserver::Connection->new(*$fh);
 $ws->_serve_thing($conn, $req);
 $conn->close;
 
