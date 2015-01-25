@@ -61,7 +61,7 @@ if ($ExtUtils::MakeMaker::VERSION ge '6.46')
 		{
 			bugtracker => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Pod-Webserver',
 			license    => 'http://opensource.org/licenses/Artistic-2.0',
-			repository => 'https://github.com/ronsavage/Pod--Webserver',
+			repository => 'https://github.com/ronsavage/Pod-Webserver',
 		},
 	};
 }

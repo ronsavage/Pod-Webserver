@@ -14,7 +14,7 @@ use IO::Socket;
 use File::Spec;
 use File::Spec::Unix ();
 
-our $VERSION = '3.09';
+our $VERSION = '3.10';
 
 # ------------------------------------------------
 
@@ -203,7 +203,7 @@ sub new_daemon {
   }
   else
   {
-	push @opts, Timeout => 5 * 3600; # Default to exit after 5 hours of idle time.
+	push @opts, Timeout => 24 * 3600; # Default to exit after 24 hours of idle time.
   }
 
   $self->muse( "Starting daemon with options {@opts}" );
@@ -507,7 +507,8 @@ C<podwebserver -h> displays help:
 	  podwebserver                   = Start podwebserver on localhost:8020. Search @INC
 	  podwebserver -p 1234           = Start podwebserver on localhost:1234
 	  podwebserver -p 1234 -H blorp  = Start podwebserver on blorp:1234
-	  podwebserver -t 3600           = Auto-exit in 1 hour. Default => 18000 (5 hours). 0 => No timeout
+	  podwebserver -t 3600           = Auto-exit in 1 hour. Default => 86000 (24 hours)
+	                                       0 => No timeout, but does not work for me
 	  podwebserver -d /path/to/lib   = Ignore @INC, and only search within /path/to/lib
 	  podwebserver -e /path/to/skip  = Exclude /path/to/skip files
 	  podwebserver -q                = Quick startup (but no Table of Contents)
@@ -605,6 +606,10 @@ under the same terms as Perl itself.
 This program is distributed in the hope that it will be useful, but
 without any warranty; without even the implied warranty of
 merchantability or fitness for a particular purpose.
+
+=head1 Repository
+
+L<https://github.com/ronsavage/Pod-Webserver>
 
 =head1 AUTHOR
 

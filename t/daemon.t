@@ -51,7 +51,7 @@ my $sock = $daemon->{__sock};
 # Create a dummy client in another process.
 use Config;
 my $perl = $Config{'perlpath'};
-open(CLIENT, "$perl daemon.t client |") or die "Can't exec client: $!";
+open(my $fh, "$perl daemon.t client |") or die "Can't exec client: $!";
 
 # Accept a request from the dummy client.
 my $conn = $daemon->accept;
@@ -61,21 +61,21 @@ ok ($req);
 ok ($req->url, 'Pod/Simple');
 ok ($req->method, 'GET');
 $conn->close;
-close CLIENT;
+close $fh;
 
 # Test the response from the daemon.
 my $testfile = 'dummysocket.txt';
-open(DUMMY, '>', $testfile);
+open($fh, '>', $testfile);
 $conn = Pod::Webserver::Connection->new(*DUMMY);
 $ws->_serve_thing($conn, $req);
 $conn->close;
 
 my $captured_response;
 {
-    open(COMP, $testfile);
+    open(my $fh1, $testfile);
     local $/ = '';
     $captured_response = <COMP>;
-    close COMP;
+    close $fh1;
     unlink $testfile;
 }
 ok ($captured_response, qr/Pod::Simple/);

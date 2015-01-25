@@ -33,7 +33,7 @@ $resp->header( 'Expires'       => Pod::Webserver::time2str($time) );
 
 # Test mock connection object response.
 my $testfile = 'dummysocket.txt';
-open(DUMMY, ">$testfile");
+open(my $fh, ">$testfile");
 my $conn = Pod::Webserver::Connection->new(*DUMMY);
 ok ($conn);
 $conn->send_response($resp);
@@ -58,7 +58,7 @@ $compare =~ s/\n/\15\12/gs;
 ok ($captured_response, qr/$compare/);
 
 # Test mock connection object sending errors.
-open(DUMMY, ">$testfile");
+open($fh, ">$testfile");
 $conn = Pod::Webserver::Connection->new(*DUMMY);
 ok ($conn);
 $conn->send_error('404');
@@ -81,10 +81,10 @@ $compare =~ s/\n/\15\12/gs;
 ok ($captured_error, qr/$compare/);
 
 # Test mock connection object retrieving requests.
-open(DUMMY, "+>$testfile");
-print DUMMY "GET http://www.cpan.org/index.html HTTP/1.0\15\12";
-close DUMMY;
-open(DUMMY, "$testfile");
+open($fh, "+>$testfile");
+print $fh "GET http://www.cpan.org/index.html HTTP/1.0\15\12";
+close $fh;
+open($fh, "$testfile");
 $conn = Pod::Webserver::Connection->new(*DUMMY);
 ok ($conn);
 $req = $conn->get_request;

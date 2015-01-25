@@ -1,5 +1,12 @@
 Revision history for Perl module Pod::Webserver:
 
+3.10  Sun Jan 25 13:32:00 2014
+	- Change default timeout from 5 to 24 hours.
+	- Rewrite bareword filehandles (INX) to use a variable (my $fh).
+	- Rename github repo from Pod--Webserver to Pod-Webserver - My new standard.
+		Update Build.PL and Makefile.PL to match.
+	- Reformat the docs, and this file, slighty, to be <= 100 chars per line - My new standard.
+
 3.09  Wed Feb 26 15:53:00 2014
 	- Use Test::TCP's Net::EmptyPort to pick a port to use for testing. See daemon.t.
 		Note: The env var $PODWEBSERVERPORT (used only for testing) still takes precedence.
@@ -15,9 +22,10 @@ Revision history for Perl module Pod::Webserver:
 
 3.06  Mon Feb 10 12:00:00 2014
 	- Ron Savage is now co-maint.
-	- Remove 'require 5;' from the source. If you're running Perl V 4, you'll have even more problems now.
-	- Add a -t (timeout) parameter. The unit is seconds. Timeout defaults (as always) to 18,000 = 5 hours.
-		This addresses RT#21582. Thanx to Ivor Williams for the 2006 report.
+	- Remove 'require 5;' from the source. If you're running Perl V 4, you'll have even more
+		problems now.
+	- Add a -t (timeout) parameter. The unit is seconds. Timeout defaults (as always) to
+		18,000 = 5 hours. This addresses RT#21582. Thanx to Ivor Williams for the 2006 report.
 		Yes, it has been a regrettably long time, hasn't it?
 	- Remove spaces in option string passed to Getopt::Std.
 		This addresses RT#44520. Thanx to Marek.Rouchal for the 2009 report.
@@ -25,10 +33,11 @@ Revision history for Perl module Pod::Webserver:
 		This problem was also noted in RT#62939. Thanx to Allison Randal for the 2010 report.
 	- Add -d (dirs to include) and -e (dirs to exclude) parameters.
 		This addresses RT#55106. Thanx to COSMICNET for the 2010 patch.
-	- Flag RT#59890 as not-an-error, since http://localhost:8020/pods/perlfaq is not (presumably) output by
-		the code, and hence is not the jumping-off point for any within-FAQ links.
+	- Flag RT#59890 as not-an-error, since http://localhost:8020/pods/perlfaq is not (presumably)
+		output by the code, and hence is not the jumping-off point for any within-FAQ links.
 	- Re-word error messages, and use die rather than a combination of die and Carp.
-	- Change licence from Perl to Artistic 2, since the Perl licence is not listed at http://opensource.org/licenses.
+	- Change licence from Perl to Artistic 2, since the Perl licence is not listed at
+		http://opensource.org/licenses.
 	- Switch tests from using Test to Test::More.
 	- Move podwebserver script into bin/.
 	- Add Build.PL.
