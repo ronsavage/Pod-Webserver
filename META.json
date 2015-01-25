@@ -4,7 +4,7 @@
       "Sean M. Burke C<sburke@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4204",
+   "generated_by" : "Module::Build version 0.421",
    "license" : [
       "artistic_2"
    ],
@@ -44,7 +44,7 @@
    "provides" : {
       "Pod::Webserver" : {
          "file" : "lib/Pod/Webserver.pm",
-         "version" : "3.09"
+         "version" : "3.10"
       },
       "Pod::Webserver::Connection" : {
          "file" : "lib/Pod/Webserver/Connection.pm",
@@ -52,15 +52,15 @@
       },
       "Pod::Webserver::Daemon" : {
          "file" : "lib/Pod/Webserver/Daemon.pm",
-         "version" : "3.09"
+         "version" : "3.10"
       },
       "Pod::Webserver::Request" : {
          "file" : "lib/Pod/Webserver/Request.pm",
-         "version" : "3.09"
+         "version" : "3.10"
       },
       "Pod::Webserver::Response" : {
          "file" : "lib/Pod/Webserver/Response.pm",
-         "version" : "3.09"
+         "version" : "3.10"
       }
    },
    "release_status" : "stable",
@@ -69,5 +69,5 @@
          "http://www.perlfoundation.org/artistic_license_2_0"
       ]
    },
-   "version" : "3.09"
+   "version" : "3.10"
 }

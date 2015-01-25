@@ -3,45 +3,45 @@ abstract: 'Minimal web server for local Perl documentation'
 author:
   - 'Sean M. Burke C<sburke@cpan.org>'
 build_requires:
-  Test::More: 0.94
-  Test::TCP: 2.02
-  Test::Version: 1.002003
+  Test::More: '0.94'
+  Test::TCP: '2.02'
+  Test::Version: '1.002003'
 configure_requires:
-  Module::Build: 0.38
+  Module::Build: '0.38'
 dynamic_config: 0
-generated_by: 'Module::Build version 0.4204, CPAN::Meta::Converter version 2.133380'
+generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.142060'
 license: artistic_2
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Pod-Webserver
 provides:
   Pod::Webserver:
     file: lib/Pod/Webserver.pm
-    version: 3.09
+    version: '3.09'
   Pod::Webserver::Connection:
     file: lib/Pod/Webserver/Connection.pm
-    version: 3.09
+    version: '3.09'
   Pod::Webserver::Daemon:
     file: lib/Pod/Webserver/Daemon.pm
-    version: 3.09
+    version: '3.09'
   Pod::Webserver::Request:
     file: lib/Pod/Webserver/Request.pm
-    version: 3.09
+    version: '3.09'
   Pod::Webserver::Response:
     file: lib/Pod/Webserver/Response.pm
-    version: 3.09
+    version: '3.09'
 requires:
-  File::Spec: 0
-  File::Spec::Unix: 0
-  IO::Socket: 0
-  Pod::Simple: 3.01
-  Pod::Simple::HTML: 0
-  Pod::Simple::HTMLBatch: 0
-  Pod::Simple::Progress: 0
-  Test::Version: 1.002003
-  strict: 0
-  warnings: 0
+  File::Spec: '0'
+  File::Spec::Unix: '0'
+  IO::Socket: '0'
+  Pod::Simple: '3.01'
+  Pod::Simple::HTML: '0'
+  Pod::Simple::HTMLBatch: '0'
+  Pod::Simple::Progress: '0'
+  Test::Version: '1.002003'
+  strict: '0'
+  warnings: '0'
 resources:
   license: http://www.perlfoundation.org/artistic_license_2_0
-version: 3.09
+version: '3.09'
