@@ -74,7 +74,7 @@ my $captured_response;
 {
     open(my $fh1, $testfile);
     local $/ = '';
-    $captured_response = <COMP>;
+    $captured_response = <$fh1>;
     close $fh1;
     unlink $testfile;
 }
