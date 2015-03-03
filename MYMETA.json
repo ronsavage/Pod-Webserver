@@ -4,7 +4,7 @@
       "Sean M. Burke C<sburke@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Module::Build version 0.4211",
+   "generated_by" : "Module::Build version 0.4211, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "artistic_2"
    ],
@@ -16,14 +16,12 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Test::More" : "0.94",
-            "Test::TCP" : "2.02",
-            "Test::Version" : "1.002003"
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "runtime" : {
@@ -35,6 +33,9 @@
             "Pod::Simple::HTML" : "0",
             "Pod::Simple::HTMLBatch" : "0",
             "Pod::Simple::Progress" : "0",
+            "Test::More" : "1.001014",
+            "Test::Pod" : "1.48",
+            "Test::TCP" : "2.02",
             "Test::Version" : "1.002003",
             "strict" : "0",
             "warnings" : "0"

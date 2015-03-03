@@ -33,32 +33,32 @@ $class -> new
 	dist_author    => 'Sean M. Burke C<sburke@cpan.org>',
 	build_requires =>
 	{
-		'Test::More'     => 0.94,
-# 	 	'Test::Pod'      => 1.45, # Make it optional. See t/pod.t
-		'Test::TCP'      => 2.02,
-		'Test::Version'  => 1.002003,
+		'Test::More' => 1.001014,
+		'Test::Pod' => 1.48,
+		'Test::TCP' => 2.02,
+		'Test::Version' => 1.002003,
 	},
 	configure_requires =>
 	{
-		'Module::Build' => 0.3800,
+		'Module::Build' => 0.4211,
 	},
 	requires =>
 	{
-		'File::Spec'             => 0,
-		'File::Spec::Unix'       => 0,
-		'IO::Socket'             => 0,
-		'Pod::Simple'            => 3.01,
-		'Pod::Simple::HTML'      => 0,
+		'File::Spec' => 0,
+		'File::Spec::Unix' => 0,
+		'IO::Socket' => 0,
+		'Pod::Simple' => 3.01,
+		'Pod::Simple::HTML' => 0,
 		'Pod::Simple::HTMLBatch' => 0,
-		'Pod::Simple::Progress'  => 0,
-		'strict'                 => 0,
-		'Test::Version'          => 1.002003,
-		'warnings'               => 0,
+		'Pod::Simple::Progress' => 0,
+		'strict' => 0,
+		'Test::Version' => 1.002003,
+		'warnings' => 0,
 	},
 	resources =>
 	{
-		bugtracker => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Pod-Webserver',
-		license    => 'http://opensource.org/licenses/Artistic-2.0',
-		repository => 'https://github.com/ronsavage/Pod-Webserver',
+		'bugtracker' => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Pod-Webserver',
+		'license' => 'http://opensource.org/licenses/Artistic-2.0',
+		'repository' => 'https://github.com/ronsavage/Pod-Webserver',
 	},
 ) -> create_build_script();
