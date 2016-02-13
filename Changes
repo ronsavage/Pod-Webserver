@@ -1,7 +1,8 @@
 Revision history for Perl module Pod::Webserver:
 
 3.11  2016-02-14T10:08:00
-	- Fix order in which _init_options() and _get_options() are called.
+	- Fix order in which _init_options() and _get_options() are called. See RT#111894.
+		Thanx to Alessandro Romualdi for reporting the problem.
 	- Reformat the dates in this file, and hence in Changelog.ini from - e.g. -
 		'Sun Feb 14 10:08:00 2016' to what you see above.
 
