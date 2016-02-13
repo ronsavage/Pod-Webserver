@@ -14,7 +14,7 @@ use IO::Socket;
 use File::Spec;
 use File::Spec::Unix ();
 
-our $VERSION = '3.10';
+our $VERSION = '3.11';
 
 # ------------------------------------------------
 
@@ -149,8 +149,8 @@ sub httpd {
   my $self = @_ ? shift(@_) : __PACKAGE__;
   $self = $self->new unless ref $self;
   $self->{'_batch_start_time'} = time();
-  $self->_get_options;
   $self->_init_options;
+  $self->_get_options;
 
   $self->contents_file('/');
   $self->prep_for_daemon;
