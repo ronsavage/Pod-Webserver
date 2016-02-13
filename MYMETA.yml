@@ -3,9 +3,12 @@ abstract: 'Minimal web server for local Perl documentation'
 author:
   - 'Sean M. Burke C<sburke@cpan.org>'
 build_requires:
-  ExtUtils::MakeMaker: '0'
+  Test::More: '1.001014'
+  Test::Pod: '1.48'
+  Test::TCP: '2.02'
+  Test::Version: '1.002003'
 configure_requires:
-  ExtUtils::MakeMaker: '0'
+  Module::Build: '0.4211'
 dynamic_config: 0
 generated_by: 'Module::Build version 0.4211, CPAN::Meta::Converter version 2.143240'
 license: artistic_2
@@ -37,9 +40,6 @@ requires:
   Pod::Simple::HTML: '0'
   Pod::Simple::HTMLBatch: '0'
   Pod::Simple::Progress: '0'
-  Test::More: '1.001014'
-  Test::Pod: '1.48'
-  Test::TCP: '2.02'
   Test::Version: '1.002003'
   strict: '0'
   warnings: '0'
