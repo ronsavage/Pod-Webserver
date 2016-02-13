@@ -501,8 +501,8 @@ L<perldoc> except it works through your browser.
 
 C<podwebserver -h> displays help:
 
-	Pod::Webserver version 3.06
-	 Running under perl version 5.018002 for linux
+	Pod::Webserver version 3.11
+	 Running under perl version 5.020002 for linux
 	Usage:
 	  podwebserver                   = Start podwebserver on localhost:8020. Search @INC
 	  podwebserver -p 1234           = Start podwebserver on localhost:1234
