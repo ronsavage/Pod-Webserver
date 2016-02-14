@@ -596,6 +596,8 @@ L<Pod::Simple::Search> L<Pod::Simple>
 
 See also L<Pod::Perldoc> and L<http://search.cpan.org/>
 
+An alternative might be L<Plack::App::MCCS>.
+
 =head1 COPYRIGHT AND DISCLAIMERS
 
 Copyright (c) 2004-2006 Sean M. Burke.  All rights reserved.
